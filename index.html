@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5ef">
+<title>Kiva's Book Shelf</title>
+<style>
+:root{--bg:#f7f5ef;--paper:#fffefa;--ink:#24251f;--muted:#77786f;--line:#e8e4d9;--green:#496b52;--green2:#e8f0e7;--gold:#d4a94d;--rose:#f5e9e4;--shadow:0 8px 28px rgba(43,39,28,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:26px 18px 18px;background:#ecefe6;border-bottom:1px solid var(--line)}.wrap{max-width:980px;margin:auto}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);font-weight:750}
+h1{font:600 30px Georgia,serif;margin:7px 0 5px}.sub{color:var(--muted);line-height:1.45}
+main{max-width:980px;margin:auto;padding:16px 14px 100px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:0 0 17px}.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px}.stat b{display:block;font:600 23px Georgia}.stat span{font-size:11px;color:var(--muted)}
+nav{display:flex;gap:7px;overflow:auto;padding:4px 0 13px}.tab{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:10px 15px;color:var(--muted);white-space:nowrap;font-weight:650}.tab.active{background:var(--green);color:white;border-color:var(--green)}
+.panel{display:none}.panel.active{display:block}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:5px 0 12px}.toolbar input,.toolbar select{flex:1;min-width:130px}
+input,select,textarea{font:inherit;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:#fffefa;color:var(--ink);width:100%;min-width:0}
+button{font:inherit;cursor:pointer}.btn{border:0;background:var(--green);color:white;padding:11px 15px;border-radius:10px;font-weight:700}.btn.secondary{background:var(--green2);color:var(--green)}.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--line)}.btn.danger{background:#f7e8e4;color:#8c3e32}
+.booklist{display:grid;gap:9px}.author-group{margin:0 0 18px}.author-heading{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:#e9eee5;border:1px solid #dce5d8;border-radius:13px;margin-bottom:9px}.author-heading h3{font:600 21px Georgia,serif;margin:0}.author-heading span,.series-heading span{font-size:11px;color:var(--muted)}.series-group{margin:0 0 13px 12px;padding-left:12px;border-left:2px solid #dce5d8}.series-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 2px 8px;color:var(--green);font-size:13px}.series-group .booklist{padding-bottom:5px}.book{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:0 2px 9px rgba(43,39,28,.025)}
+.booktop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.title{font:600 17px Georgia,serif;line-height:1.25}.byline{font-size:12px;color:var(--muted);margin-top:4px}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.pill{font-size:11px;padding:5px 8px;border-radius:99px;background:#f0eee7;color:#666}.pill.read{background:#e4efe3;color:#345b39}.pill.todo{background:#f7edda;color:#795a20}.pill.reading{background:#e6edf5;color:#385979}
+.actions{display:flex;gap:6px;align-items:center}.small{font-size:12px;padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:white;color:var(--green)}
+.formbox{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:15px;margin:12px 0;box-shadow:var(--shadow)}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formgrid .full{grid-column:1/-1}label{display:block;font-size:12px;color:var(--muted);font-weight:650;margin:0 0 5px}.field{min-width:0}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:16px 0 9px}.sectionhead h2{font:600 21px Georgia,serif;margin:0}.hint{font-size:12px;color:var(--muted);line-height:1.45}
+.authorrow{display:flex;justify-content:space-between;align-items:center;background:var(--paper);border:1px solid var(--line);padding:12px;border-radius:12px;margin-bottom:8px}.authorrow b{font:600 16px Georgia}.authorrow small{display:block;color:var(--muted);margin-top:3px}
+textarea{min-height:110px;resize:vertical}.empty{padding:25px;text-align:center;color:var(--muted);background:var(--paper);border:1px dashed var(--line);border-radius:14px}
+footer{position:fixed;bottom:0;left:0;right:0;background:rgba(247,245,239,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;z-index:5}footer button{max-width:220px;flex:1}
+.note{background:#f1eee4;border-radius:12px;padding:12px;font-size:12px;line-height:1.5;color:#666}
+@media(min-width:700px){main{padding-top:22px}.booklist{grid-template-columns:1fr 1fr}.stats{max-width:560px}.formgrid{grid-template-columns:repeat(4,1fr)}.formgrid .full{grid-column:span 2}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="eyebrow">A little library, growing with her</div><h1>Kiva's Book Shelf</h1><div class="sub">Track what she's read, what she wants to read, and when each book was finished.</div></div></header>
+<main>
+<div class="stats">
+ <div class="stat"><b id="readCount">0</b><span>BOOKS READ</span></div>
+ <div class="stat"><b id="todoCount">0</b><span>ON HER LIST</span></div>
+ <div class="stat"><b id="authorCount">0</b><span>AUTHORS</span></div>
+</div>
+<nav>
+ <button class="tab active" data-tab="library">Library</button>
+ <button class="tab" data-tab="authors">Authors & books</button>
+ <button class="tab" data-tab="read">Read books</button>
+ <button class="tab" data-tab="wishlist">Wishlist</button>
+ <button class="tab" data-tab="ai">AI helper</button>
+ <button class="tab" data-tab="backup">Backup & restore</button>
+</nav>
+
+<section id="library" class="panel active">
+ <div class="toolbar">
+  <input id="search" placeholder="Search title, author or series…">
+  <select id="statusFilter"><option value="all">All statuses</option><option value="read">Read</option><option value="todo">Want to read</option><option value="reading">Reading</option><option value="later">Maybe later</option></select>
+  <select id="authorFilter"><option value="all">All authors</option></select>
+ </div>
+ <div class="sectionhead"><h2>Bookshelf</h2><button class="btn secondary" id="showAdd">＋ Add a book</button></div>
+ <div id="addBookBox" class="formbox" hidden>
+  <div class="formgrid">
+   <div class="field"><label>BOOK TITLE</label><input id="newTitle" placeholder="Book title"></div>
+   <div class="field"><label>AUTHOR</label><input id="newAuthor" list="authorHints" placeholder="Author name"><datalist id="authorHints"></datalist></div>
+   <div class="field"><label>SERIES / COLLECTION</label><input id="newSeries" placeholder="Optional"></div>
+   <div class="field"><label>STATUS</label><select id="newStatus"><option value="todo">Want to read</option><option value="read">Read</option><option value="reading">Reading</option><option value="later">Maybe later</option></select></div>
+   <div class="field"><label>YEAR READ (ONLY YEAR)</label><input id="newYear" type="number" min="2000" max="2100" placeholder="e.g. 2026"></div>
+   <div class="field full"><label>NOTES (OPTIONAL)</label><input id="newNotes" placeholder="Short note, edition, content note…"></div>
+  </div>
+  <div class="formactions"><button class="btn" id="saveBook">Save book</button><button class="btn ghost" id="cancelAdd">Cancel</button></div>
+  <div class="hint" style="margin-top:8px">If you mark a book as Read, add just the year. You can edit it later.</div>
+ </div>
+ <div id="books" class="booklist"></div>
+</section>
+
+<section id="authors" class="panel">
+ <div class="sectionhead"><h2>Authors & book sets</h2></div>
+ <p class="hint">Add an author, then add individual titles or paste a list of titles (one per line). This keeps the catalogue editable instead of locking you into a fixed list.</p>
+ <div class="formbox">
+  <label>ADD AN AUTHOR</label>
+  <div style="display:flex;gap:8px"><input id="authorName" placeholder="e.g. Katherine Applegate"><button class="btn" id="addAuthor">Add</button></div>
+ </div>
+ <div class="formbox">
+  <label>ADD A SET OF BOOKS FOR ONE AUTHOR</label>
+  <div class="formgrid">
+   <div class="field full"><label>AUTHOR</label><input id="bulkAuthor" list="authorHints" placeholder="Author name"></div>
+   <div class="field full"><label>BOOK TITLES — ONE PER LINE</label><textarea id="bulkTitles" placeholder="The One and Only Ivan&#10;The One and Only Bob&#10;Crenshaw"></textarea></div>
+  </div>
+  <div class="formactions"><button class="btn" id="addBulk">Add these books</button></div>
+  <p class="hint">Optional format: Title | Series. Existing titles by the same author won't be duplicated.</p>
+ </div>
+ <div id="authorList"></div>
+</section>
+
+<section id="read" class="panel">
+ <div class="sectionhead"><h2>All books Kiva has read</h2><span class="pill" id="readTotal">0 books</span></div>
+ <p class="hint">A complete reading history, grouped by author and then by series. Read years are shown wherever recorded.</p>
+ <div id="readBooks"></div>
+</section>
+
+<section id="wishlist" class="panel">
+ <div class="sectionhead"><h2>Kiva's wishlist</h2><button class="btn secondary" id="addWishToggle">＋ Add</button></div>
+ <p class="hint">Give each book a priority number. Lower numbers appear first (1 = next book to get/read).</p>
+ <div class="formbox" id="wishForm" hidden>
+  <div class="formgrid">
+   <div class="field"><label>PRIORITY NUMBER</label><input id="wishRank" type="number" min="1" step="1" value="1"></div>
+   <div class="field"><label>BOOK TITLE</label><input id="wishTitle" placeholder="Book title"></div>
+   <div class="field"><label>AUTHOR</label><input id="wishAuthor" list="authorHints" placeholder="Author"></div>
+   <div class="field"><label>SERIES (OPTIONAL)</label><input id="wishSeries" placeholder="Series name"></div>
+   <div class="field full"><label>WHY / NOTES (OPTIONAL)</label><input id="wishNotes" placeholder="Who suggested it, content check, etc."></div>
+  </div>
+  <div class="formactions"><button class="btn" id="saveWish">Save wishlist item</button><button class="btn ghost" id="cancelWish">Cancel</button></div>
+ </div>
+ <div id="wishList"></div>
+</section>
+
+<section id="ai" class="panel">
+ <div class="sectionhead"><h2>AI helper</h2></div>
+ <p class="hint">Ready-to-copy prompts that use Kiva's current reading history and wishlist. Open ChatGPT, paste the prompt, and ask it to do the research.</p>
+ <div class="formbox">
+  <h3 style="font:600 18px Georgia;margin:0 0 6px">1. Add a complete author / series catalogue</h3>
+  <p class="hint">Use this when you want AI to prepare a verified list of books by an author. It requests a consistent import format.</p>
+  <div class="note"><b>Expected output format — one book per line:</b><br>Author | Series name (or Standalone) | Book sequence number | Book title | Publication year (if known)<br><br>For a series, sequence numbers must reflect the recommended reading order. Separate different series by the same author. Do not invent titles or include uncertain books without marking them.</div>
+  <div class="formactions"><button class="btn" id="copyBulkPrompt">Copy catalogue prompt</button></div>
+ </div>
+ <div class="formbox">
+  <h3 style="font:600 18px Georgia;margin:0 0 6px">2. Suggest Kiva's next books</h3>
+  <p class="hint">Uses read books to avoid duplicates and considers the current wishlist.</p>
+  <div class="formactions"><button class="btn" id="copyNextPrompt">Copy next-books prompt</button></div>
+ </div>
+ <div class="formbox">
+  <h3 style="font:600 18px Georgia;margin:0 0 6px">3. Review content suitability</h3>
+  <p class="hint">Ask AI to check potentially mature themes before buying a title.</p>
+  <div class="formactions"><button class="btn" id="copyContentPrompt">Copy content-check prompt</button></div>
+ </div>
+ <div class="formbox">
+  <label>OPTIONAL NOTES FOR FUTURE RECOMMENDATIONS</label>
+  <textarea id="profileNotes" placeholder="e.g. Loves fantasy and mythology; enjoys longer books; avoid explicit sexual content; wants more non-fiction."></textarea>
+  <div class="formactions"><button class="btn secondary" id="makeSummary">Refresh AI profile</button><button class="btn secondary" id="copySummary">Copy full reading profile</button></div>
+  <textarea id="summaryText" style="min-height:260px;margin-top:10px" readonly></textarea>
+ </div>
+ <div class="note">Bulk catalogue prompt output can be pasted into Authors & books → Add a set of books. That importer accepts one title per line, or Title | Series. The full five-column format is intended as a reviewable AI result; add the approved titles using the bulk form.</div>
+</section>
+
+<section id="backup" class="panel">
+ <div class="sectionhead"><h2>Your data stays yours</h2></div>
+ <div class="note">The app saves changes in this browser on this iPhone. Export a JSON backup regularly and keep it in the Files app (for example, On My iPhone → Kiva Books). If Safari data is cleared or the file is opened in a different browser context, restore from that backup.</div>
+ <div class="formbox">
+  <h3 style="font:600 18px Georgia;margin:0 0 8px">Export backup</h3>
+  <p class="hint">Downloads a small JSON file containing your authors, books, statuses, years and notes.</p>
+  <button class="btn" id="export">Export JSON backup</button>
+ </div>
+ <div class="formbox">
+  <h3 style="font:600 18px Georgia;margin:0 0 8px">Restore / import</h3>
+  <p class="hint">Choose a backup JSON file. Import replaces the current library on this device.</p>
+  <input type="file" id="importFile" accept=".json,application/json">
+  <div class="formactions"><button class="btn danger" id="clearAll">Reset all data</button></div>
+ </div>
+</section>
+</main>
+<footer>
+ <button class="btn secondary" id="footerAdd">＋ Add book</button>
+ <button class="btn" id="footerCopy">Copy AI summary</button>
+</footer>
+<script>
+const KEY='kivaBookShelf_v1';
+const seed={
+ authors:["Rick Riordan","Katherine Applegate","Roshani Chokshi","Ross Welford","Ruskin Bond","David Walliams","Cressida Cowell","Louis Sachar","Norton Juster","M.G. Leonard","E. B. White","Madeleine L'Engle","James Patterson","Francesca Simon","Roald Dahl"],
+ books:[
+ ["The Lightning Thief","Rick Riordan","Percy Jackson and the Olympians","read",null],
+ ["The Sea of Monsters","Rick Riordan","Percy Jackson and the Olympians","read",null],
+ ["The Titan's Curse","Rick Riordan","Percy Jackson and the Olympians","read",null],
+ ["The Battle of the Labyrinth","Rick Riordan","Percy Jackson and the Olympians","read",null],
+ ["The Last Olympian","Rick Riordan","Percy Jackson and the Olympians","read",null],
+ ["The Lost Hero","Rick Riordan","The Heroes of Olympus","todo",null],
+ ["The Son of Neptune","Rick Riordan","The Heroes of Olympus","todo",null],
+ ["The Mark of Athena","Rick Riordan","The Heroes of Olympus","todo",null],
+ ["The House of Hades","Rick Riordan","The Heroes of Olympus","todo",null],
+ ["The Blood of Olympus","Rick Riordan","The Heroes of Olympus","todo",null],
+ ["The One and Only Ivan","Katherine Applegate","The One and Only","todo",null],
+ ["The One and Only Bob","Katherine Applegate","The One and Only","todo",null],
+ ["The One and Only Ruby","Katherine Applegate","The One and Only","todo",null],
+ ["The One and Only Family","Katherine Applegate","The One and Only","todo",null],
+ ["Crenshaw","Katherine Applegate","","todo",null],
+ ["The End of Time","Roshani Chokshi","Aru Shah","todo",null],
+ ["The Song of Death","Roshani Chokshi","Aru Shah","todo",null],
+ ["The Tree of Wishes","Roshani Chokshi","Aru Shah","todo",null],
+ ["The City of Gold","Roshani Chokshi","Aru Shah","todo",null],
+ ["The Nectar of Immortality","Roshani Chokshi","Aru Shah","todo",null],
+ ["The 1,000-Year-Old Boy","Ross Welford","","todo",null],
+ ["The Kid Who Came from Space","Ross Welford","","todo",null],
+ ["Time Travelling with a Hamster","Ross Welford","","todo",null],
+ ["What Not to Do If You Turn Invisible","Ross Welford","","todo",null],
+ ["The Dog Who Saved the World","Ross Welford","","todo",null],
+ ["The Ice Children","M. G. Leonard","","todo",null],
+ ["Wonder","R. J. Palacio","","todo",null],
+ ["Holes","Louis Sachar","","todo",null],
+ ["The Phantom Tollbooth","Norton Juster","","todo",null],
+ ["Impossible Creatures","Katherine Rundell","","todo",null],
+ ["Tom's Midnight Garden","Philippa Pearce","","todo",null],
+ ["A Wrinkle in Time","Madeleine L'Engle","","todo",null],
+ ["Charlotte's Web","E. B. White","","todo",null],
+ ["The Trumpet of the Swan","E. B. White","","todo",null],
+ ["The Person Controller","David Baddiel","","todo",null],
+ ["The Parent Agency","David Baddiel","","todo",null],
+ ["How to Speak Dragonese","Cressida Cowell","How to Train Your Dragon","todo",null],
+ ["The Room of Many Colours","Ruskin Bond","","todo",null],
+ ["The Blue Umbrella","Ruskin Bond","","todo",null],
+ ["The Cherry Tree","Ruskin Bond","","todo",null],
+ ["The Night Train at Deoli and Other Stories","Ruskin Bond","","later",null],
+ ["Matilda","Roald Dahl","","read",null],
+ ["The Witches","Roald Dahl","","read",null],
+ ["The BFG","Roald Dahl","","read",null],
+ ["Charlie and the Chocolate Factory","Roald Dahl","","read",null],
+ ["James and the Giant Peach","Roald Dahl","","read",null]
+ ].map((b,i)=>({id:'b'+i,title:b[0],author:b[1],series:b[2],status:b[3],year:b[4],notes:""})),
+ profileNotes:"Kiva is 9. She has completed Harry Potter and the original Percy Jackson and the Olympians series. She has read Roald Dahl. She enjoys substantial chapter books."
+};
+let data=load(); data.wishlist=Array.isArray(data.wishlist)?data.wishlist:[];
+function load(){try{let x=JSON.parse(localStorage.getItem(KEY));if(x&&Array.isArray(x.books)&&Array.isArray(x.authors))return x}catch(e){}return structuredClone(seed)}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function id(){return 'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function statusName(s){return ({read:'Read',todo:'Want to read',reading:'Reading',later:'Maybe later'})[s]||'Want to read'}
+function render(){
+ document.getElementById('readCount').textContent=data.books.filter(b=>b.status==='read').length;
+ document.getElementById('todoCount').textContent=data.books.filter(b=>['todo','reading'].includes(b.status)).length;
+ document.getElementById('authorCount').textContent=data.authors.length;
+ const opts=data.authors.slice().sort((a,b)=>a.localeCompare(b)).map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');
+ document.getElementById('authorFilter').innerHTML='<option value="all">All authors</option>'+opts;
+ document.getElementById('authorHints').innerHTML=opts;
+ renderBooks();renderAuthors();renderReadPage();renderWishlist();
+}
+function renderBooks(){
+ const q=document.getElementById('search').value.toLowerCase(),st=document.getElementById('statusFilter').value,au=document.getElementById('authorFilter').value;
+ let arr=data.books.filter(b=>(st==='all'||b.status===st)&&(au==='all'||b.author===au)&&[b.title,b.author,b.series,b.notes].join(' ').toLowerCase().includes(q));
+ const card=b=>`<article class="book"><div class="booktop"><div><div class="title">${esc(b.title)}</div><div class="byline">${b.series?'Part of '+esc(b.series):'Standalone book'}</div></div><div class="actions"><button class="small" onclick="editBook('${b.id}')">Edit</button></div></div><div class="meta"><span class="pill ${b.status}">${statusName(b.status)}</span>${b.year?`<span class="pill">Read in ${esc(b.year)}</span>`:''}${b.notes?`<span class="pill">${esc(b.notes)}</span>`:''}</div></article>`;
+ if(!arr.length){document.getElementById('books').innerHTML='<div class="empty">No books match this filter. Add a title or change the filters.</div>';return;}
+ // First group by author, then by series. Each distinct series remains its own section.
+ const authors=[...new Set(arr.map(b=>b.author))].sort((a,b)=>a.localeCompare(b));
+ document.getElementById('books').innerHTML=authors.map(author=>{
+   const authorBooks=arr.filter(b=>b.author===author);
+   const seriesNames=[...new Set(authorBooks.map(b=>(b.series||'').trim()||'Standalone books'))].sort((a,b)=>{
+     if(a==='Standalone books')return 1;if(b==='Standalone books')return -1;return a.localeCompare(b);
+   });
+   const readCount=authorBooks.filter(b=>b.status==='read').length;
+   return `<section class="author-group">
+     <div class="author-heading"><div><h3>${esc(author)}</h3><span>${authorBooks.length} book${authorBooks.length===1?'':'s'} · ${readCount} read</span></div></div>
+     ${seriesNames.map(series=>{
+       const group=authorBooks.filter(b=>((b.series||'').trim()||'Standalone books')===series).sort((a,b)=>a.title.localeCompare(b.title));
+       const groupRead=group.filter(b=>b.status==='read').length;
+       return `<div class="series-group"><div class="series-heading"><strong>${esc(series)}</strong><span>${groupRead}/${group.length} read</span></div><div class="booklist">${group.map(card).join('')}</div></div>`;
+     }).join('')}
+   </section>`;
+ }).join('');
+}
+function renderAuthors(){
+ document.getElementById('authorList').innerHTML=data.authors.slice().sort((a,b)=>a.localeCompare(b)).map(a=>{let bs=data.books.filter(b=>b.author===a);return `<div class="authorrow"><div><b>${esc(a)}</b><small>${bs.length} book${bs.length===1?'':'s'} · ${bs.filter(b=>b.status==='read').length} read</small></div><button class="small" onclick="filterAuthor('${esc(a).replace(/'/g,"\\'")}')">View books</button></div>`}).join('');
+}
+function renderReadPage(){
+ const arr=data.books.filter(b=>b.status==='read').sort((a,b)=>a.author.localeCompare(b.author)||((a.series||'').localeCompare(b.series||''))||a.title.localeCompare(b.title));
+ document.getElementById('readTotal').textContent=arr.length+' books';
+ const authors=[...new Set(arr.map(b=>b.author))];
+ document.getElementById('readBooks').innerHTML=arr.length?authors.map(author=>{
+  const bs=arr.filter(b=>b.author===author),series=[...new Set(bs.map(b=>(b.series||'').trim()||'Standalone books'))];
+  return `<section class="author-group"><div class="author-heading"><div><h3>${esc(author)}</h3><span>${bs.length} read</span></div></div>${series.map(sn=>{let group=bs.filter(b=>((b.series||'').trim()||'Standalone books')===sn);return `<div class="series-group"><div class="series-heading"><strong>${esc(sn)}</strong><span>${group.length} read</span></div><div class="booklist">${group.map(b=>`<article class="book"><div class="title">${esc(b.title)}</div><div class="meta"><span class="pill read">Read</span>${b.year?`<span class="pill">Read in ${esc(b.year)}</span>`:''}</div></article>`).join('')}</div></div>`}).join('')}</section>`;
+ }).join(''):'<div class="empty">No books marked as read yet.</div>';
+}
+function renderWishlist(){
+ const arr=data.wishlist.slice().sort((a,b)=>Number(a.rank)-Number(b.rank)||a.title.localeCompare(b.title));
+ document.getElementById('wishList').innerHTML=arr.length?arr.map(w=>`<article class="book"><div class="booktop"><div><div class="title"><span class="pill todo">#${esc(w.rank)}</span> ${esc(w.title)}</div><div class="byline">${esc(w.author)}${w.series?' · '+esc(w.series):''}</div>${w.notes?`<div class="hint" style="margin-top:6px">${esc(w.notes)}</div>`:''}</div><div class="actions"><button class="small" onclick="editWish('${w.id}')">Edit</button><button class="small" onclick="removeWish('${w.id}')">×</button></div></div></article>`).join(''):'<div class="empty">Wishlist is empty. Add books here or ask AI for suggestions.</div>';
+}
+function editWish(wid){let w=data.wishlist.find(x=>x.id===wid);if(!w)return;let rank=prompt('Priority number',w.rank);if(rank===null)return;let title=prompt('Book title',w.title);if(title===null)return;let author=prompt('Author',w.author);if(author===null)return;let series=prompt('Series (optional)',w.series||'');if(series===null)return;let notes=prompt('Notes (optional)',w.notes||'');if(notes===null)return;w.rank=Math.max(1,parseInt(rank)||1);w.title=title;w.author=author;w.series=series;w.notes=notes;save()}
+function removeWish(wid){if(confirm('Remove this book from the wishlist?')){data.wishlist=data.wishlist.filter(w=>w.id!==wid);save()}}
+function filterAuthor(a){document.querySelector('[data-tab="library"]').click();document.getElementById('authorFilter').value=a;renderBooks()}
+function editBook(bookId){
+ let b=data.books.find(x=>x.id===bookId);if(!b)return;
+ let title=prompt('Book title',b.title);if(title===null)return;
+ let author=prompt('Author',b.author);if(author===null)return;
+ let status=prompt('Status: read / todo / reading / later',b.status);if(status===null)return;
+ if(!['read','todo','reading','later'].includes(status)){alert('Status not recognised.');return}
+ let year=prompt('Year read (leave blank if not read)',b.year||'');if(year===null)return;
+ let series=prompt('Series / collection (optional)',b.series||'');if(series===null)return;
+ b.title=title.trim()||b.title;b.author=author.trim()||b.author;b.status=status;b.year=status==='read'?(year.trim()||''):'';b.series=series.trim();if(!data.authors.includes(b.author))data.authors.push(b.author);save();
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById(t.dataset.tab).classList.add('active');if(t.dataset.tab==='summary')makeSummary()}));
+['search','statusFilter','authorFilter'].forEach(x=>document.getElementById(x).addEventListener(x==='search'?'input':'change',renderBooks));
+function openAdd(){document.querySelector('[data-tab="library"]').click();document.getElementById('addBookBox').hidden=false;document.getElementById('newTitle').focus()}
+document.getElementById('showAdd').onclick=openAdd;document.getElementById('footerAdd').onclick=openAdd;document.getElementById('cancelAdd').onclick=()=>document.getElementById('addBookBox').hidden=true;
+document.getElementById('saveBook').onclick=()=>{let title=document.getElementById('newTitle').value.trim(),author=document.getElementById('newAuthor').value.trim();if(!title||!author){alert('Please enter both title and author.');return}let status=document.getElementById('newStatus').value;data.books.push({id:id(),title,author,series:document.getElementById('newSeries').value.trim(),status,year:status==='read'?document.getElementById('newYear').value.trim():'',notes:document.getElementById('newNotes').value.trim()});if(!data.authors.includes(author))data.authors.push(author);['newTitle','newAuthor','newSeries','newYear','newNotes'].forEach(x=>document.getElementById(x).value='');document.getElementById('addBookBox').hidden=true;save()};
+document.getElementById('addAuthor').onclick=()=>{let a=document.getElementById('authorName').value.trim();if(!a)return;if(!data.authors.includes(a))data.authors.push(a);document.getElementById('authorName').value='';save()};
+document.getElementById('addBulk').onclick=()=>{let a=document.getElementById('bulkAuthor').value.trim(),lines=document.getElementById('bulkTitles').value.split(/\n/).map(x=>x.trim()).filter(Boolean);if(!a||!lines.length){alert('Enter an author and at least one title.');return}if(!data.authors.includes(a))data.authors.push(a);let n=0;lines.forEach(line=>{let [title,series='']=line.split('|').map(x=>x.trim());if(title&&!data.books.some(b=>b.author.toLowerCase()===a.toLowerCase()&&b.title.toLowerCase()===title.toLowerCase())){data.books.push({id:id(),title,author:a,series,status:'todo',year:'',notes:''});n++}});document.getElementById('bulkTitles').value='';save();alert(`${n} book(s) added to ${a}.`)};
+document.getElementById('addWishToggle').onclick=()=>{document.getElementById('wishForm').hidden=false;document.getElementById('wishRank').focus()};
+document.getElementById('cancelWish').onclick=()=>document.getElementById('wishForm').hidden=true;
+document.getElementById('saveWish').onclick=()=>{let title=document.getElementById('wishTitle').value.trim(),author=document.getElementById('wishAuthor').value.trim();if(!title||!author){alert('Enter a title and author.');return}data.wishlist.push({id:id(),rank:Math.max(1,parseInt(document.getElementById('wishRank').value)||1),title,author,series:document.getElementById('wishSeries').value.trim(),notes:document.getElementById('wishNotes').value.trim()});if(!data.authors.includes(author))data.authors.push(author);['wishTitle','wishAuthor','wishSeries','wishNotes'].forEach(x=>document.getElementById(x).value='');document.getElementById('wishForm').hidden=true;save()};
+function makeSummary(){
+ let read=data.books.filter(b=>b.status==='read').sort((a,b)=>a.author.localeCompare(b.author)||a.title.localeCompare(b.title));
+ let reading=data.books.filter(b=>b.status==='reading'),todo=data.books.filter(b=>b.status==='todo'),later=data.books.filter(b=>b.status==='later');
+ const group=arr=>{let m={};arr.forEach(b=>(m[b.author]??=[]).push(`${b.title}${b.series?' ['+b.series+']':''}${b.year?' ('+b.year+')':''}`));return Object.entries(m).sort().map(([a,ts])=>`${a}: ${ts.join('; ')}`).join('\n')||'None recorded'};
+ let wish=data.wishlist.slice().sort((a,b)=>a.rank-b.rank);
+ let wishText=wish.map(w=>`#${w.rank} ${w.title} — ${w.author}${w.series?' ('+w.series+')':''}`).join('\n')||'None recorded';
+ let txt=`KIVA — READING PROFILE
+Age: 9 (update as needed)
+
+READ (year in brackets where recorded)
+${group(read)}
+
+CURRENTLY READING
+${group(reading)}
+
+WANTS TO READ
+${group(todo)}
+
+MAYBE LATER
+${group(later)}
+
+WISHLIST (priority order)
+${wishText}
+
+PREFERENCES / NOTES
+${data.profileNotes||'None recorded'}
+
+TASK FOR AI
+Suggest age-appropriate next books for Kiva. Do not recommend books already listed as read. Consider her completed series, interests and notes. Distinguish standalone books from series, give the correct reading order, and flag potentially mature themes. Suggest a balanced mix of fiction and non-fiction.`;
+ document.getElementById('summaryText').value=txt;return txt;
+}
+document.getElementById('makeSummary').onclick=makeSummary;document.getElementById('copySummary').onclick=async()=>{let t=makeSummary();try{await navigator.clipboard.writeText(t);alert('AI summary copied.')}catch(e){document.getElementById('summaryText').select();alert('Select and copy the summary.')}};
+document.getElementById('footerCopy').onclick=()=>{document.querySelector('[data-tab="ai"]').click();document.getElementById('copySummary').click()};
+document.getElementById('profileNotes').value=data.profileNotes||'';document.getElementById('profileNotes').addEventListener('change',e=>{data.profileNotes=e.target.value;localStorage.setItem(KEY,JSON.stringify(data))});
+document.getElementById('export').onclick=()=>{data.profileNotes=document.getElementById('profileNotes').value;let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='kiva-books-backup-'+new Date().getFullYear()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+document.getElementById('importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.books)||!Array.isArray(x.authors))throw Error();if(!confirm('Replace this device library with the selected backup?'))return;data=x;localStorage.setItem(KEY,JSON.stringify(data));document.getElementById('profileNotes').value=data.profileNotes||'';render();alert('Backup restored.')}catch(err){alert('That file does not look like a valid Kiva Books backup.')}e.target.value=''};
+document.getElementById('clearAll').onclick=()=>{if(confirm('Delete all books and authors from this browser? Export a backup first if you may need this data.')){data={authors:[],books:[],profileNotes:''};localStorage.setItem(KEY,JSON.stringify(data));document.getElementById('profileNotes').value='';render()}};
+render();makeSummary();
+</script>
+</body></html>
